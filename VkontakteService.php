@@ -9,6 +9,7 @@
  * @copyright 2011 Lexa kozakov <lexakozakov@gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.php MIT
  * @link http://github.com/mptre/php-soundcloud
+ * @link https://github.com/lexakozakov/Vkontakte
  */
 
 class VkontakteService
