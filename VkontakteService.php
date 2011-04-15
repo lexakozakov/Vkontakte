@@ -286,26 +286,20 @@ class VkontakteService
 		$url = $this->buildUrl($params, true);
 		$response = $this->request($url, $curlOptions);
 
-		if ($this->returnFormat =='xml')
+		if ($this->returnFormat =='json')
 		{
-			$ret = $response;
-		}else{
 			$aResponse = json_decode($response, true);
 
         	$this->lastResponseType = is_array($aResponse) && array_key_exists('error', $aResponse) ? 'error' : '';
 
 			if (is_array($aResponse) && array_key_exists('error', $aResponse))
 			{
-        		$this->lastResponseError = $response['error']['error_code'];
-        		$this->lastResponseErrorDesc = $response['error']['error_msg'];
-        		$this->lastResponse = $response['error'];
+        		$this->lastResponseError = $aResponse['error']['error_code'];
+        		$this->lastResponseErrorDesc = $aResponse['error']['error_msg'];
+        		$this->lastResponse = $aResponse['error'];
 				$ret = array();
-			}else{
-				$ret = $response['response'];
 			}
-		
 		}
-		
 		
 		return $response;  
 	}

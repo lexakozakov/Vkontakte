@@ -36,7 +36,7 @@ if (isset($_GET['connect']))
 // if we have access_token we connect to vkontakte and try to get data
 if ($_SESSION['aAccessKey'])
 {
-	$oVkontakte->setAccessToken($_SESSION['aAccessKey']);
+	$oVkontakte->setAccessToken($_SESSION['aAccessKey']['access_token']);
 	$data = $oVkontakte->executeMethod('getProfiles', array('domains'=>'durov', 'fields'=>'photo,nickname,country,contacts'));
 	
 	print_r($data);
