@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<meta charset="utf-8">
+        <title>Vkontakte oAuth2 Example</title>
+        
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">    
+    
+        <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
+        
+        <style type="text/css">
+            body { background: #E9E9E9 url('img/body-bg.png') repeat 0 0; }
+            div.span6 label { width: auto; }
+        
+        </style>        
+	</head>
+	<body>
+	    <div class="navbar navbar-inverse navbar-fixed-top">
+	        <div class="navbar-inner">
+	            <div class="container">
+	                <a class="brand">Vkontakte Auth Access</a>
+	            </div>
+	        </div>
+	    </div>
+	    
+	    
+	    <div class="container"  style="margin-top: 50px;">
+	    <?php if ($aLoggedUser){ ?>
+	        <div class="row-fluid">
+    	        <div class="span1">
+	        	    <img src="<?php echo $aLoggedUser->response[0]->photo;?>">
+    	        </div>
+
+    	        <div class="span6">
+    	            <i>ID:</i> <?php echo $aLoggedUser->response[0]->uid; ?><br/>
+	        	    <i>Name:</i> <?php echo $aLoggedUser->response[0]->first_name . ' ' . $aLoggedUser->response[0]->nickname .' '. $aLoggedUser->response[0]->last_name; ?><br/>
+	        	    <br/>
+	        	    <a href="/?logout" class="btn">Logout</a>
+    	        </div>
+	        
+	        </div>
+	        
+	    
+	    <?php }else{?>
+    	    <?php if (!APP_ID || !APP_SECRET_KEY){ ?>
+                <div class="alert alert-error">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>Error!</strong> You must set 'APP_ID' and 'APP_SECRET_KEY' values in index.php.
+                </div>	    
+    	        
+    	        <div>
+    	            <a class="btn btn-info" target="_blank" href="http://vk.com/editapp?act=create">Create a new app</a>
+    	        </div>
+    	    <?php }else{ ?>
+    	        
+    	        <?php if ($connectionErrors){ ?>
+                <div class="alert alert-error">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>Error!</strong> <?php echo $connectionErrors; ?>
+                </div>	    
+    	        <?php }?>
+    	        
+    	        <h2>oAuth login to vk.vom</h2>
+    	        <a href="/?connect" class="btn btn-success">Connect</a>
+    
+    	    <?php } ?>
+	    
+	    <?php } ?>
+	    </div>
+	    
+	    
+		
+	</body>      
+</html>        

@@ -96,8 +96,7 @@ class VkontakteService
 	*
 	* @var string
 	*/
-	private $sHost = 'api.vkontakte.ru';
-	
+	private $sHost = 'vk.com';
 	
     /**
 	* Vkontakte's Allowed Setting.
@@ -107,18 +106,18 @@ class VkontakteService
 	* @var array
 	*/
 	private $aAllowedSettings = array(
-		'notify',		// Пользователь разрешил отправлять ему уведомления.
-		'friends',		// Доступ к друзьям.
-		'photos',		// Доступ к фотографиям.
-		'audio',		// Доступ к аудиозаписям.
-		'video',		// Доступ к видеозаписям.
-		'notes',		// Доступ заметкам пользователя.
-		'pages',		// Доступ к wiki-страницам.
-		'offers',		// Доступ к предложениям (устаревшие методы).
-		'questions',	// Доступ к вопросам (устаревшие методы).
-		'wall',			// Доступ к обычным и расширенным методам работы со стеной.
-		'messages',		// (для Standalone-приложений) Доступ к расширенным методам работы с сообщениями.
-		'offline',		// Доступ к API в любое время со стороннего сервера.  
+		'notify',		// An user allowed to send him the notifications
+		'friends',		// Access to users' friends 
+		'photos',		// Access to users' photos
+		'audio',		// Access to users' audio
+		'video',		// Access to users' video 
+		'notes',		// Access to users' notes
+		'pages',		// Access to users' wiki-pages
+		'offers',		// Access to users' offers (depricated) 
+		'questions',	// Access to users' questions (depricated)
+		'wall',			// Access to methods working with users' wall 
+		'messages',		// Access to users' messages (for Standalone)
+		'offline',		// Access to API 
 	);
 	
 
@@ -162,12 +161,13 @@ class VkontakteService
 	public function getAuthorizeUrl($params = array())
 	{
 		$params = array_merge(array(
-			'url_type' => 'authorize',
-			'client_id' => $this->iAppId,
-			'redirect_uri' => urlencode($this->sRedirectUrl),
-			'response_type' => ($this->loginType == 'client') ? 'token' : 'code',
-			'scope' => $this->getSettingsToAccess(),
+			'url_type'      => 'authorize',
+			'client_id'     => $this->iAppId,
+			'redirect_uri'  => urlencode($this->sRedirectUrl),
+			'response_type' => $this->loginType == 'client' ? 'token' : 'code',
+			'scope'         => $this->getSettingsToAccess(),
 		), $params);
+		
 		return $this->buildUrl($params);
 	}
 	
@@ -182,12 +182,13 @@ class VkontakteService
 	public function getAccessTokenUrl($params = array())
 	{
 		$params = array_merge(array(
-			'url_type' => 'access_token',
-			'client_id' => $this->iAppId,
+			'url_type'      => 'access_token',
+			'client_id'     => $this->iAppId,
 			'client_secret' => $this->sAppSecret,
-			'code' => $params['code']
+			'code'          => $params['code'],
+			'redirect_uri'  => urlencode($this->sRedirectUrl),
 		), $params);
-		
+
 		return $this->buildUrl($params, true);
 	}
 	
@@ -202,13 +203,15 @@ class VkontakteService
      */
 	public function getAccessToken($getData, $curlOptions = array())
 	{
-        $response = json_decode( $this->request($this->getAccessTokenUrl($getData), $curlOptions), true );
+        $response = json_decode($this->request($this->getAccessTokenUrl($getData), $curlOptions), true);
 
-        if (is_array($response) && array_key_exists('access_token', $response)) {
+        if (is_array($response) && array_key_exists('access_token', $response)) 
+        {
             $this->sAccessToken = $response['access_token'];
-
             return $response;
-        } else {
+        } 
+        else 
+        {
         	$this->lastResponseType = is_array($response) && array_key_exists('error', $response) ? 'error' : '';
         	$this->lastResponseError = $response['error'];
         	$this->lastResponseErrorDesc = $response['error_description'];
@@ -246,7 +249,10 @@ class VkontakteService
 		
 		foreach($aSettings as $key => $val)
 		{
-			if (in_array($val, $this->aAllowedSettings)) $this->aSettingsToAccess[] = $val;
+			if (in_array($val, $this->aAllowedSettings))
+			{
+    			$this->aSettingsToAccess[] = $val;
+			} 
 		}
 		
 		return true;
@@ -280,8 +286,8 @@ class VkontakteService
 		
 		$params = array(
 			'method' => $sMethodName.($this->returnFormat == 'xml' ? '.xml' : ''),
-			
 		);
+		
 		$params += $aParams;
 		$url = $this->buildUrl($params, true);
 		$response = $this->request($url, $curlOptions);
@@ -315,7 +321,7 @@ class VkontakteService
      */
 	protected function buildUrl($params, $https = false)
 	{
-		$sUrl = 'http'.( $https ? 's' : '' ).'://' . $this->sHost.'/'.($params['method'] ? 'method' : 'oauth').'/'.($params['method'] ? $params['method'] : $params['url_type']).'?';
+		$sUrl = 'http'.( $https ? 's' : '' ).'://'.($params['method'] ? 'api.' : 'oauth.').$this->sHost.($params['method'] ? '/method' : '').'/'.($params['method'] ? $params['method'] : $params['url_type']).'?';
 		
 		$getParams =  $params;
 		unset($getParams['url_type'], $getParams['method']);
