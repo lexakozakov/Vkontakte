@@ -1,0 +1,14 @@
+Vkontakte oAuth login.
+
+
+Short examples: 
+// create object
+$oVkontakte = new VkontakteService(APP_ID, APP_SECRET_KEY, CALLBACK_URL);
+
+// get authorize URL
+$oVkontakte->getAuthorizeUrl();
+
+// fetch data
+$aLoggedUser = $oVkontakte->executeMethod('getProfiles', array('fields'=>'photo,nickname,country,contacts'));
+
+
